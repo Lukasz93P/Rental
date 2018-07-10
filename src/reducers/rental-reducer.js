@@ -1,4 +1,4 @@
-import {FETCH_RENTALS,FETCH_RENTAL_BY_ID,FETCH_RENTAL_BY_ID_SUCCESS,FETCH_RENTAL_BY_ID_PENDING} from "../actions/types";
+import {FETCH_RENTALS,FETCH_RENTALS_SUCCESS,FETCH_RENTAL_BY_ID,FETCH_RENTAL_BY_ID_SUCCESS,FETCH_RENTAL_BY_ID_PENDING} from "../actions/types";
 
 const initialState={
     
@@ -18,7 +18,7 @@ export const RentalReducer=(state=initialState.rentals,action)=>
 {
     switch(action.type)
     {
-        case FETCH_RENTALS:
+        case FETCH_RENTALS_SUCCESS:
             return Object.assign({},state,{data:action.payload})
         default:
             return state

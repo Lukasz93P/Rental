@@ -1,17 +1,42 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import * as actions from '../../../actions';
+import RentalDetailInfo from './RentalDetailInfo';
+import {RentalMap} from './RentalMap'
 
 class RentalDetail extends Component{
 
 
     render(){
+        const {rental}=this.props;
         if(this.props.isPending)
-            return <h1>Loading, please wait</h1>
+            return(
+                <div className="container loader-container col-md-12">
+                    <div className="loader"></div>
+                </div>
+            )
         return(
-            <div>
-                <h1>{this.props.selectedRental.title}</h1>
-            </div>
+            <section id='rentalDetails'>
+                <div className='upper-section'>
+                    <div className='row'>
+                        <div className='col-md-6'>
+                            <img src={rental.image} alt=''></img>
+                        </div>
+                        <div className='col-md-6'>
+                            <RentalMap location={`${rental.city}, ${rental.street}`}/>
+                        </div>
+                    </div>
+                </div>
+
+                <div className='details-section'>
+                    <div className='row'>
+                        <div className='col-md-8'>
+                            <RentalDetailInfo rental={rental}/>
+                        </div>
+                        <div className='col-md-4'> BOOKING</div>
+                    </div>
+                </div>
+            </section>
         )
     }
 
@@ -29,7 +54,7 @@ function mapStateToProps(state){
 
     return{
 
-        selectedRental:state.rental.data,
+        rental:state.rental.data,
         isPending:state.rental.isPending,
 
     }
