@@ -4,10 +4,11 @@ import {connect} from 'react-redux';
 import * as actions from '../../../actions';
 import RentalList from "./RentalList"
 
+
 class RentalListing extends Component{
 
-    componentWillMount(){
-
+        componentWillMount(){
+            this.props.alert
         this.props.dispatch(actions.fetchRentals());
 
     }
@@ -18,7 +19,7 @@ class RentalListing extends Component{
         return(
             <section id='rentalListing'>
                 <h1 className='page-title'>Your Home All Around the World</h1>
-                <RentalList rentals={this.props.rentals}/>   
+                <RentalList  rentals={this.props.rentals}/>   
             </section>
         )
     }
@@ -29,6 +30,7 @@ function mapStateToProps(state){
         rentals:state.rentals.data,
     }
 }
+
 
 
 
