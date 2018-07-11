@@ -9,7 +9,7 @@ const app=express();
 
 mongoose.connect('mongodb://test:6974figd@ds247838.mlab.com:47838/rental-base')
 .then(()=>{const DB=new FakeDb()
-    DB.pushTo();
+    //DB.pushTo();
 })
 
 app.use(bodyParser.json());
