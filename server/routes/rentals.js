@@ -1,6 +1,11 @@
 const express =require ('express');
 const router=express.Router();
 const Rental=require('../models/Rental')
+const {authMiddleware}=require('../controllers/user')
+
+router.get('/secret',authMiddleware,(req,res)=>{
+    return res.json("SECRETTT");
+})
 
 router.get('',(req,res)=>{
 

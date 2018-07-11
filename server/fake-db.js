@@ -1,4 +1,5 @@
 const Rental =require("./models/Rental")
+const User=require("./models/User")
 
 class FakeDb{
     
@@ -59,25 +60,50 @@ class FakeDb{
     shared: false,
     createdAt: "2018-05-15"
 }]
+
+
+    this.users=[
+
+        {username:'Lukasz',
+        email:'lukasz9.3@intaria.pl',
+        password:'aro1993'
+        }
+        
+
+    ]
     }
 
 
     pushRentalsToDb(){
 
+        const newUser=new User(this.users[0])
+
         this.rentals.forEach(rental=>{
             const newRental = new Rental(rental);
+            newRental.user=newUser
+            newUser.rentals.push(newRental)
             newRental.save();
+        })
+        newUser.save()
+    }
+
+    pushUsersToDb(){
+
+        this.users.forEach(user=>{
+            const newUser = new User(user);
+            newUser.save();
         })
 
     }
 
     async cleanDb(){
        await Rental.remove({})
+       await User.remove({})
     }
 
 
-    pushTo(){
-        this.cleanDb();
+    async pushTo(){
+        await this.cleanDb()
         this.pushRentalsToDb();
 
     }

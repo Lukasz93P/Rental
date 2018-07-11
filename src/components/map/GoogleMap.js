@@ -55,6 +55,7 @@ const withGeocode=(WrappedComponent)=>{
 
         componentWillMount(){
             this.locate();
+            console.log(this.cacher)
         }
 
         locate=()=>{
