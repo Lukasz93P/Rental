@@ -1,5 +1,4 @@
 import React,{Component} from 'react';
-import RentalCard from "./RentalCard";
 import {connect} from 'react-redux';
 import * as actions from '../../../actions';
 import RentalList from "./RentalList"
@@ -8,10 +7,8 @@ import RentalList from "./RentalList"
 class RentalListing extends Component{
 
         componentWillMount(){
-            this.props.alert
         this.props.dispatch(actions.fetchRentals());
-
-    }
+        }
 
 
     render(){

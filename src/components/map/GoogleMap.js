@@ -5,7 +5,6 @@ import {
     withScriptjs,
     withGoogleMap,
     GoogleMap,
-    Marker,
     Circle,
     InfoWindow,
   } from "react-google-maps";
@@ -18,7 +17,7 @@ const MapComponent=(props)=>{
         defaultZoom={15}
         defaultCenter={{lat:parseFloat(coordinates.lat), lng:parseFloat(coordinates.lng)}}
         center={{lat:parseFloat(coordinates.lat), lng:parseFloat(coordinates.lng)}}
-        
+        options={{disableDefaultUI:isError ? true : false}}
       >
         
             {!isError && <Circle
@@ -56,18 +55,18 @@ const withGeocode=(WrappedComponent)=>{
 
         componentWillMount(){
             this.locate();
-            console.log(this.cacher);
         }
 
         locate=()=>{
             
-            //const location=this.props.loc;
-            const location='464574hbdfghtfu6dhtfhf';
+            const location=this.props.loc;
+            //const location='464574hbdfghtfu6dhtfhf';
             if(this.cacher.isValueCached(location)){
                 this.setState({coordinates:this.cacher.getCachedValue(location)})
             }
             else {this.locateNewLocation(location)
-                .then(resolve=>this.setState({coordinates:resolve}),
+                .then(resolve=>{this.setState({coordinates:resolve})
+                this.cacher.cacheValue(location, resolve) },
                     error=>{console.log(error)
                         this.setState({isError:true})
                     })
@@ -86,9 +85,6 @@ const withGeocode=(WrappedComponent)=>{
                     if(status==='OK'){
                         const geo=result[0].geometry.location
                         const loc={lat:geo.lat(), lng:geo.lng()}
-                        this.setState({coordinates:loc})
-                        this.cacher.cacheValue(location, loc)
-
                         resolve(loc)
                     }
 
@@ -107,7 +103,6 @@ const withGeocode=(WrappedComponent)=>{
     }
 
 }
-
 
 export const MapWithAMarker = withScriptjs(withGoogleMap(withGeocode(MapComponent)));
 
