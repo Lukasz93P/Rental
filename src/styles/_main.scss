@@ -3,6 +3,7 @@
 @import './rental/rental-listing.scss';
 @import './loader/loader.scss';
 @import './rental/rental-detail.scss';
+@import './logingAndRegistration/register.scss';
 
 
 .page-title{
@@ -21,4 +22,29 @@
 
 .condo{
     color:#d68000 !important;
+}
+
+.btn-bwm{
+
+    background-color: $main-color;
+    border-color:$main-color;
+    color:white;
+    padding:15px 30px;
+    font-size: 20px;
+
+    &:hover,&:focus,&a:active{
+
+        border-color:$main-color !important;
+        background-color: $main-color !important;
+    }
+
+
+}
+
+button{
+
+    &:hover{
+        cursor: pointer;
+    }
+
 }
