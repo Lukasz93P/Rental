@@ -30,15 +30,15 @@ exports.auth =(req, res)=>{
 
 exports.register = (req,res)=>{
 
-    const {username,email,password,passwordConfirmation} = req.body;
+    const {username,email,password,passwordconfirmation} = req.body;
     if(!username || !email)
         return res.status(422).send({errors:[{title: 'Data missing', detail:'Missing username or email '}]})
-    if(password !== passwordConfirmation)
+    if(password !== passwordconfirmation)
         return res.status(422).send({errors:[{title:'Different passwords', detail:'Password and password confirmation are different'}]})
     
     User.findOne({email}, (error, mailInUse)=>{
-        if(error)
-            return res.status(422).send({errors:normalizeErrors(error.errors)})
+        if(error){
+            return res.status(422).send({errors:normalizeErrors(error.errors)})}
         if(mailInUse)
             return res.status(422).send({errors:[{title:"User already exists", detail:"Mail is in use"}]})
     
@@ -66,7 +66,7 @@ exports.authMiddleware=function (req,res, next){
             if(error)
                 return res.status(422).send({error:normalizeErrors(error.errors)})
             if(foundUser){
-                res.locals.user=user;
+                res.locals.user=foundUser;
                 next();
             }
             else 
