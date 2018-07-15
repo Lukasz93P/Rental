@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom'
 
-const Header =()=>{
+const Header =(props)=>{
 
 
     return(
@@ -20,6 +20,7 @@ const Header =()=>{
                     <div className='navbar-nav ml-auto'>
                         <Link to='/login' className='nav-item nav-link active' >Login <span className='sr-only'>(current)</span></Link>
                         <Link to='/register' className='nav-item nav-link' href=''>Register</Link>
+                        <p className='nav-item nav-link logout' onClick={props.logout}>Logout</p>
                     </div>
                 </div>
             </div>

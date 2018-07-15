@@ -61,7 +61,7 @@ exports.authMiddleware=function (req,res, next){
     if(token){
 
         const user=parseToken(token)
-
+        
         User.findById(user.userId,(error,foundUser)=>{
             if(error)
                 return res.status(422).send({error:normalizeErrors(error.errors)})

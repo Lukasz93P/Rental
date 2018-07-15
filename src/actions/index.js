@@ -1,11 +1,16 @@
-import {LOGIN_SUCCESS,LOGIN_FAILED,REGISTER,FETCH_RENTALS_SUCCESS,FETCH_RENTAL_BY_ID_SUCCESS,FETCH_RENTAL_BY_ID_PENDING} from "./types"
+import {LOGOUT,LOGIN_SUCCESS,LOGIN_FAILED,FETCH_RENTALS_SUCCESS,FETCH_RENTAL_BY_ID_SUCCESS,FETCH_RENTAL_BY_ID_PENDING} from "./types"
 import axios from 'axios';
+import AuthService from '../services/auth-service'
+import AxiosService from '../services/axios-service'
+import axiosService from "../services/axios-service";
+
+const axiosInstance =axiosService.getInstance()
 
 
 export const fetchRentals=()=>{
 
     return dispatch=>{
-        axios.get('http://localhost:3000/api/v1/rentals')
+        axiosInstance.get('/rentals')
             .then(response=>dispatch(fetchRentalsSuccess(response.data)))
 
     }
@@ -69,28 +74,38 @@ export const register=(userData)=>{
     //.catch(error=>console.log(error))
 }
 
+export const checkAuthState=()=>{
+
+    return dispatch=>{
+        if(AuthService.isTokenValid())
+            dispatch(loginSuccess())
+        else 
+            dispatch(logout())
+    }
+
+
+}
+
+
 export const login=(userData)=>{
 
     return dispatch=>{ axios.post('/api/v1/users/auth', userData)
     
         .then(
-            response=>response.data ,
-            errors=>dispatch(loginFailed(errors.response.data.errors))
+            response=>response.data 
         )
         .then(token/*token is response.data*/=>{
-            localStorage.setItem('auth_token',token)
-            dispatch(loginSuccess(token))
+            AuthService.sendToken(token)
+            dispatch(loginSuccess())
         })
         .catch(errors=>dispatch(loginFailed(errors.response.data.errors)))
     }
 }
 
-export const loginSuccess=(token)=>{
+export const loginSuccess=()=>{
     
     return {
         type:LOGIN_SUCCESS,
-        payload:token
-
     }
 }
 
@@ -100,7 +115,16 @@ export const loginFailed=(errors)=>
     return{
         type:LOGIN_FAILED,
         payload:errors
+    }
 
+}
+
+export const logout =()=>{
+
+    AuthService.invalidate()
+    return{
+
+        type:LOGOUT
 
     }
 

@@ -10,7 +10,6 @@ const RegisterForm = props => {
 
           <Field
             name="username"
-            component="input"
             type="text"
             placeholder="username"
             className="form-control"
@@ -22,7 +21,6 @@ const RegisterForm = props => {
 
           <Field
             name="email"
-            component="input"
             type="email"
             placeholder="email"
             className="form-control"
@@ -35,7 +33,6 @@ const RegisterForm = props => {
 
           <Field
             name="password"
-            component="input"
             type="password"
             placeholder="password"
             className="form-control"
@@ -47,7 +44,6 @@ const RegisterForm = props => {
 
           <Field
             name="passwordconfirmation"
-            component="input"
             type="password"
             placeholder="confirmation password"
             className="form-control"
@@ -56,7 +52,7 @@ const RegisterForm = props => {
           />
 
         <button type="submit" className="btn btn-form btn-bwm" disabled={!valid || pristine || submitting}>
-          Submit
+          Register
         </button>
         <div>
           <Errors errors={errors}/>

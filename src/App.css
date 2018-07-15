@@ -24,6 +24,9 @@
   .navbar .nav-item {
     color: #ededed; }
 
+.logout {
+  cursor: pointer; }
+
 #rentalListing {
   /* SINGLE CARD STYLES*/ }
   #rentalListing .title {
