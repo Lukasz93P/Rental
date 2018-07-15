@@ -65,8 +65,13 @@ class FakeDb{
     this.users=[
 
         {username:'Lukasz',
-        email:'lukasz9.3@intaria.pl',
-        password:'aro1993'
+        email:'lukasz9.3@interia.pl',
+        password:'6974'
+        }
+        ,
+        {username:'smoku',
+        email:'smoku@smoku.pl',
+        password:'smoku'
         }
         
 
@@ -77,6 +82,7 @@ class FakeDb{
     pushRentalsToDb(){
 
         const newUser=new User(this.users[0])
+        const secondUser=new User(this.users[1])
 
         this.rentals.forEach(rental=>{
             const newRental = new Rental(rental);
@@ -85,6 +91,7 @@ class FakeDb{
             newRental.save();
         })
         newUser.save()
+        secondUser.save()
     }
 
     pushUsersToDb(){

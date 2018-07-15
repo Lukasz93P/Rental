@@ -20,7 +20,9 @@ const userSchema=new Schema({
         required:'Enter Your password',
     },
 
-    rentals:[{type:Schema.Types.ObjectId, ref: 'Rental'}]
+    rentals:[{type:Schema.Types.ObjectId, ref: 'Rental'}],
+    
+    bookings:[{type:Schema.Types.ObjectId, ref: 'Booking'}]
 })
 
 userSchema.pre('save', function (next){
