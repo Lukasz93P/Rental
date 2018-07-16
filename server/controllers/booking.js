@@ -19,19 +19,24 @@ exports.booking =(req, res)=>{
             return res.status(422).send({error:normalizeErrors(error.errors)}) 
         if(foundRental.user._id.toString()===user._id.toString())
             return res.status(422).send({errors:[{title:'Invalid user', detail:`You can\'t book your own property`}]})
-
+            
         if(isValidBooking(booking,foundRental)){
             booking.user=user
             booking.rental=foundRental
-            booking.save()
+            booking.save(error=>{
+                if(error)
+                    return res.status(422).send({error:normalizeErrors(error.errors)}) 
+                }
+            )
 
-            foundRental.bookings.push(booking)
-            foundRental.save()
+
+            User.findByIdAndUpdate(user._id,)
+            User.update({_id:user._id},
+                {$push:{bookings:booking}}, function(error,response){}
+            )
+           
             
-            user.bookings.push(booking)
-            user.save()
-            
-            return res.json({'Booking created':true})
+            return res.json({startAt:booking.startAt, endAt:booking.endAt})
         }
         else
             return res.status(422).send({errors:[{title:'Invalid booking', detail:`Booking is not available at choosen dates`}]})

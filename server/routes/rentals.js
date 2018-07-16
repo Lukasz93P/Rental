@@ -16,13 +16,17 @@ router.get('',(req,res)=>{
 
 router.get('/:id',(req,res)=>{
     const rentalId=req.params.id;
-    Rental.findById(rentalId,(err,response)=>{
-        if(err){ 
-            res.status(422).send({errors:[{title:'Rental Error',detail:'Rental not found'}]})
-        }    
-        res.json(response)
+    
+    Rental.findById(rentalId)
+        .populate('bookings'/*NOT SCHEMA NAME BUT NAME OF FIELD IN RENTAL SCHEMA WHICH CONTAINS BOOKINGS*/)
+        .populate('user'/*SAME AS ABOVE THATS WHY user not User capitalized like User schema */)
+        .exec((err,response)=>{
+            if(err){ 
+                res.status(422).send({errors:[{title:'Rental Error',detail:'Rental not found'}]})
+            }    
+            res.json(response)
 
-    })
+        })
 
 })
 
