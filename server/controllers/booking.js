@@ -21,13 +21,16 @@ exports.booking =(req, res)=>{
             return res.status(422).send({errors:[{title:'Invalid user', detail:`You can\'t book your own property`}]})
 
         if(isValidBooking(booking,foundRental)){
-            foundRental.bookings.push(booking)
-            booking.rental=foundRental
             booking.user=user
-            user.bookings.push(booking)
+            booking.rental=foundRental
             booking.save()
-            user.save()
+
+            foundRental.bookings.push(booking)
             foundRental.save()
+            
+            user.bookings.push(booking)
+            user.save()
+            
             return res.json({'Booking created':true})
         }
         else
