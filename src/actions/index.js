@@ -129,3 +129,12 @@ export const logout =()=>{
     }
 
 }
+
+export const createBooking=(booking)=>{
+
+
+    return axiosInstance.post('/bookings', booking)
+    .then(response=>response.data)
+    .catch(errors=>Promise.reject(errors.response.data.errors))
+
+}
