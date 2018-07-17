@@ -35,7 +35,6 @@ exports.booking =(req, res)=>{
                 }
             )
 
-            User.findByIdAndUpdate(user._id,)
             User.update({_id:user._id},
                 {$push:{bookings:booking}}, function(error,response){}
             )

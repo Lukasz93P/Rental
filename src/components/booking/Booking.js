@@ -129,7 +129,9 @@ export class Booking extends React.Component {
     successMessage =()=>{
         const {bookingStartDate,bookingEndDate,guests,rental}=this.state
         
-        toast(`Between ${bookingStartDate} and ${bookingEndDate} rental in ${firstToUpper(rental.city)} is for You${guests>1 ? ` and Your ${guests-1} guests` : ``}`);
+        toast.success(`Between ${bookingStartDate} and ${bookingEndDate} rental in ${firstToUpper(rental.city)} 
+                    is for You${guests>1 ? ` and Your ${guests-1} guests` : ``}`, {position: "top-center"
+                });
     
     }
 
@@ -162,7 +164,7 @@ export class Booking extends React.Component {
             <BookingModal open={open} close={this.rejectBookingConfirmation} 
             confirm={this.sendBookingToServer} rental={rental} starting={bookingStartDate} 
             ending={bookingEndDate} guests={guests} days={days} totalPrice={totalPrice} errors={errors}/>
-            <ToastContainer position="top-center"/>
+            <ToastContainer typeposition="top-center"/>
         </div>
         )
     }
