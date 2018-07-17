@@ -134,7 +134,9 @@ export const createBooking=(booking)=>{
 
 
     return axiosInstance.post('/bookings', booking)
-    .then(response=>response.data)
+    .then(response=>response.data
+        //,errors=>Promise.reject(errors.response.data.errors)
+    )
     .catch(errors=>Promise.reject(errors.response.data.errors))
 
 }

@@ -1,6 +1,8 @@
 const express =require ('express');
 const router=express.Router();
 const Rental=require('../models/Rental')
+const Booking=require('../models/Booking')
+const User=require('../models/User')
 const {authMiddleware}=require('../controllers/user')
 
 router.get('/secret',authMiddleware,(req,res)=>{
@@ -8,18 +10,50 @@ router.get('/secret',authMiddleware,(req,res)=>{
 })
 
 router.get('',(req,res)=>{
-
-    //Rental.find({},(err,response)=>{res.json(response)})
     
-    Rental.find({})
+    let query = {}
+    const city=req.query.city
+    
+    if(city)
+        query={city:city.toLowerCase()}
+    
+    
+    Rental.find(query)
         .select('-bookings')// get all Rentals without bookings to avoid fething to much data without purpose
         .exec((err,response)=>{
-            if(err){ 
+            if(err){
                 return res.status(422).send({errors:[{title:'Rental Error',detail:'Rental not found'}]})
-            }    
-            return res.json(response)
+            } 
+
+            if(city && response.length===0)
+                return res.status(422).send({errors:[{title:'Rental not found',detail:`We have not any rentals in ${city}`}]})    
+            
+            return res.json(response)      
 
         })
+
+})
+
+
+router.post('/add',authMiddleware,(req,res)=>{
+
+    const {title, city, street, category, image, bedrooms, shared, description, dailyRate} = req.body
+    const user = res.locals.user
+
+    const newRental = new Rental({title, city, street, category, image, bedrooms, shared, description, dailyRate})
+    
+    newRental.user=user
+    newRental.save()
+
+    User.update({_id:user._id},
+        {$push:{rentals:newRental}}, function(error,response){
+
+            if(error)
+                return res.status(422).send({error:normalizeErrors(error.errors)}) 
+            
+            return res.json(newRental)
+        })
+
 
 })
 
