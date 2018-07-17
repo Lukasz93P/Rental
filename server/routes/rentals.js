@@ -22,7 +22,7 @@ router.get('',(req,res)=>{
         .select('-bookings')// get all Rentals without bookings to avoid fething to much data without purpose
         .exec((err,response)=>{
             if(err){
-                return res.status(422).send({errors:[{title:'Rental Error',detail:'Rental not found'}]})
+                return res.status(422).send({error:normalizeErrors(error.errors)})
             } 
 
             if(city && response.length===0)
@@ -53,8 +53,6 @@ router.post('/add',authMiddleware,(req,res)=>{
             
             return res.json(newRental)
         })
-
-
 })
 
 router.get('/:id',(req,res)=>{
