@@ -19,28 +19,24 @@ class Header extends Component {
 
     }
 
-    onEnter=(event)=>{
-        if(event.key==='Enter')
-            this.search()
-    }
+
     
-    search=()=>{
-        
+    search=(event)=>{
+        event.preventDefault()
         const {city}=this.state
-        console.log('!!!!!!!', city)
         city ? this.props.history.push(`/rentals/${city}/homes`) : this.props.history.push(`/rentals`)
           
     
     }
 
     render(){
-        const {search, logout}=this.props
+        const { logout}=this.props
 
         return(
             <nav className='navbar navbar-dark navbar-expand-lg'>
                 <div className='container'>
                     <Link className='navbar-brand' to='/rentals'>BookWithMe</Link>
-                    <SearchInput onEnter={this.onEnter} setSearchedCity={this.setSearchedCity} search={this.search}/>
+                    <SearchInput  setSearchedCity={this.setSearchedCity} search={this.search}/>
                     <button className='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarNavAltMarkup' aria-controls='navbarNavAltMarkup' aria-expanded='false' aria-label='Toggle navigation'>
                         <span className='navbar-toggler-icon'></span>
                     </button>
