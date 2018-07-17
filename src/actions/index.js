@@ -1,4 +1,4 @@
-import {LOGOUT,LOGIN_SUCCESS,LOGIN_FAILED,FETCH_RENTALS_SUCCESS,FETCH_RENTAL_BY_ID_SUCCESS,FETCH_RENTAL_BY_ID_PENDING} from "./types"
+import {FETCH_RENTALS_INIT,FETCH_RENTALS_FAILED,LOGOUT,LOGIN_SUCCESS,LOGIN_FAILED,FETCH_RENTALS_SUCCESS,FETCH_RENTAL_BY_ID_SUCCESS,FETCH_RENTAL_BY_ID_PENDING} from "./types"
 import axios from 'axios';
 import AuthService from '../services/auth-service'
 import AxiosService from '../services/axios-service'
@@ -7,12 +7,15 @@ import axiosService from "../services/axios-service";
 const axiosInstance =axiosService.getInstance()
 
 
-export const fetchRentals=()=>{
+export const fetchRentals=(city)=>{
 
+    const url = city ? `/rentals?city=${city}` : '/rentals'
+    
     return dispatch=>{
-        axiosInstance.get('/rentals')
+        dispatch(fetchRentalsInit())
+        axiosInstance.get(url)
             .then(response=>dispatch(fetchRentalsSuccess(response.data)))
-
+            .catch(errors=>dispatch(fetchRentalsFailed(errors.response.data.errors)))
     }
 
 }
@@ -27,6 +30,29 @@ export const fetchRentalsSuccess=(rentals)=>{
     }
 
 }
+
+export const fetchRentalsInit=(rentals)=>{
+
+    return{
+        
+        type:FETCH_RENTALS_INIT,
+
+    }
+
+}
+
+export const fetchRentalsFailed=(errors)=>{
+
+    return{
+        
+        type:FETCH_RENTALS_FAILED,
+        payload:errors
+
+    }
+
+}
+
+
 
 export const fetchRentalById=(rentalId)=>{
     

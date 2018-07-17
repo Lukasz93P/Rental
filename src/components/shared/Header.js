@@ -1,33 +1,60 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {Link} from 'react-router-dom'
+import SearchInput from '../rental/rental-listing/SearchInput'
+import {withRouter} from 'react-router-dom'
 
-const Header =(props)=>{
+class Header extends Component {
 
+    constructor(){
+        super()
+        this.state={
+            city:""
+        }
+    }
 
-    return(
+    setSearchedCity=(event)=>{
 
-        <nav className='navbar navbar-dark navbar-expand-lg'>
-            <div className='container'>
-                <Link className='navbar-brand' to='/rentals'>BookWithMe</Link>
-                <form className='form-inline my-2 my-lg-0'>
-                    <input className='form-control mr-sm-2 bwm-search' type='search' placeholder='Try "New York"' aria-label='Search'></input>
-                    <button className='btn btn-outline-success my-2 my-sm-0 btn-bwm-search' type='submit'>Search</button>
-                </form>
-                <button className='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarNavAltMarkup' aria-controls='navbarNavAltMarkup' aria-expanded='false' aria-label='Toggle navigation'>
-                    <span className='navbar-toggler-icon'></span>
-                </button>
-                <div className='collapse navbar-collapse' id='navbarNavAltMarkup'>
-                    <div className='navbar-nav ml-auto'>
-                        <Link to='/login' className='nav-item nav-link active' >Login <span className='sr-only'>(current)</span></Link>
-                        <Link to='/register' className='nav-item nav-link' href=''>Register</Link>
-                        <p className='nav-item nav-link logout' onClick={props.logout}>Logout</p>
+        const city=event.target.value
+        this.setState({city})
+
+    }
+
+    onEnter=(event)=>{
+        if(event.key==='Enter')
+            this.search()
+    }
+    
+    search=()=>{
+        
+        const {city}=this.state
+        console.log('!!!!!!!', city)
+        city ? this.props.history.push(`/rentals/${city}/homes`) : this.props.history.push(`/rentals`)
+          
+    
+    }
+
+    render(){
+        const {search, logout}=this.props
+
+        return(
+            <nav className='navbar navbar-dark navbar-expand-lg'>
+                <div className='container'>
+                    <Link className='navbar-brand' to='/rentals'>BookWithMe</Link>
+                    <SearchInput onEnter={this.onEnter} setSearchedCity={this.setSearchedCity} search={this.search}/>
+                    <button className='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarNavAltMarkup' aria-controls='navbarNavAltMarkup' aria-expanded='false' aria-label='Toggle navigation'>
+                        <span className='navbar-toggler-icon'></span>
+                    </button>
+                    <div className='collapse navbar-collapse' id='navbarNavAltMarkup'>
+                        <div className='navbar-nav ml-auto'>
+                            <Link to='/login' className='nav-item nav-link active' >Login <span className='sr-only'>(current)</span></Link>
+                            <Link to='/register' className='nav-item nav-link' href=''>Register</Link>
+                            <p className='nav-item nav-link logout' onClick={logout}>Logout</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </nav>
-
-    )
-
+            </nav>
+        )
+    }
 }
 
-export default Header
+export default withRouter(Header)

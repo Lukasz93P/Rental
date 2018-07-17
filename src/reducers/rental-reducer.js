@@ -1,10 +1,11 @@
-import {FETCH_RENTALS_SUCCESS,FETCH_RENTAL_BY_ID_SUCCESS,FETCH_RENTAL_BY_ID_PENDING} from "../actions/types";
+import {FETCH_RENTALS_INIT,FETCH_RENTALS_FAILED,FETCH_RENTALS_SUCCESS,FETCH_RENTAL_BY_ID_SUCCESS,FETCH_RENTAL_BY_ID_PENDING} from "../actions/types";
 
 const initialState={
     
     rentals:
     {
         data:[],
+        errors:[],
     }
     ,
     rental:{
@@ -20,6 +21,10 @@ export const RentalReducer=(state=initialState.rentals,action)=>
     {
         case FETCH_RENTALS_SUCCESS:
             return Object.assign({},state,{data:action.payload})
+        case FETCH_RENTALS_INIT:
+            return Object.assign({},state, {errors:[],data:[]})
+        case FETCH_RENTALS_FAILED:
+            return Object.assign({},state,{errors:action.payload, data:[]})
         default:
             return state
     }
