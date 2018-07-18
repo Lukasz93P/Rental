@@ -8,7 +8,7 @@ export class Register extends React.Component{
 
 
     constructor(){
-        super(),
+        super()
         this.state={
 
             errors:[],

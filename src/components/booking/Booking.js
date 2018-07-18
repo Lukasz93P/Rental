@@ -151,7 +151,7 @@ export class Booking extends React.Component {
             </div>
             <div className='form-group'>
             <label htmlFor='guests'>Guests</label>
-            <input value={guests} min='1' max={rental.bedrooms + 4} onChange={this.setGuestsQuantity}  type='number' className='form-control' id='guests' aria-describedby='emailHelp' placeholder=''></input>
+            <input value={guests} min='1' max={(rental.bedrooms + 4).toString()} onChange={this.setGuestsQuantity}  type='number' className='form-control' id='guests' aria-describedby='emailHelp' placeholder=''></input>
             </div>
             <button onClick={this.openModal} className='btn btn-bwm btn-confirm btn-block'
             disabled={bookingStartDate==='' || bookingEndDate==='' || guests===0}

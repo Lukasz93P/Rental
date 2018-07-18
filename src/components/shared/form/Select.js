@@ -1,21 +1,20 @@
 import React from 'react'
 
-export const input = ({
+export const Select = ({
     input,
     label,
-    type,
+    options,
     className,
-    symbol,
     meta: { touched, error, warning }
   }) => (
     <div className='form-group'>
       <label>{label}</label>
       <div className='input-group'>
-      {symbol && <div className='input-group-prepend'>
-                  <div className='input-group-text'>{symbol}</div>
-                </div>
-      }
-        <input {...input} className={className} type={type} />
+        <select {...input} className={className}  >
+        {options ? options.map((option,index)=><option key={index} value={option.value}>{option.label}</option>)
+        : <div></div> 
+        }
+        </select>
         </div>
         {touched &&
           ((error && <div className='alert alert-danger'>{error}</div>))}

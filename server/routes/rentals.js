@@ -4,6 +4,8 @@ const Rental=require('../models/Rental')
 const Booking=require('../models/Booking')
 const User=require('../models/User')
 const {authMiddleware}=require('../controllers/user')
+const {normalizeErrors} = require('../helpers/mongoose');
+
 
 router.get('/secret',authMiddleware,(req,res)=>{
     return res.json("SECRETTT");
@@ -43,16 +45,30 @@ router.post('/add',authMiddleware,(req,res)=>{
     const newRental = new Rental({title, city, street, category, image, bedrooms, shared, description, dailyRate})
     
     newRental.user=user
-    newRental.save()
 
-    User.update({_id:user._id},
-        {$push:{rentals:newRental}}, function(error,response){
 
-            if(error)
-                return res.status(422).send({error:normalizeErrors(error.errors)}) 
+    newRental.save(function (error, rental) {
+        if (error) {console.log('!!!!!!!!>>',normalizeErrors(error.errors))
+            return res.status(422).send({error:normalizeErrors(error.errors)})
+        }
+        return(            
             
-            return res.json(newRental)
-        })
+            User.update({_id:user._id},
+                {$push:{rentals:newRental}}, function(error,response){
+        
+                    if(error)
+                        return res.status(422).send({error:normalizeErrors(error.errors)}) 
+            }),
+            
+            
+            res.json(rental)
+
+        )
+    });
+    
+
+    
+
 })
 
 router.get('/:id',(req,res)=>{

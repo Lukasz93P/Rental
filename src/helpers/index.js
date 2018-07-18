@@ -26,9 +26,17 @@ export const firstToUpper = (string)=>{
 
     let result=""
     if(string && string.length>0)
-        result=string.charAt(0).toUpperCase()+string.substring(1)
+        result=string.charAt(0).toUpperCase()+string.substring(1).toLowerCase()
 
     return result
+
+}
+
+
+export const fieldRequired=()=>{
+
+    return ('This field is required')
+
 
 }
 

@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../actions';
 import RentalList from "./RentalList"
 import RentalNotFound from './RentalNotFound';
-
+import * as helpers from '../../../helpers/index'
 
 
 class RentalSearch extends Component{
@@ -49,7 +49,7 @@ class RentalSearch extends Component{
                 }
                 {!areErrors && 
                 <div>
-                    <h1 className='page-title'>Your Home in {city}</h1>
+                    <h1 className='page-title'>Your Home in {helpers.firstToUpper(city)}</h1>
                     <RentalList  rentals={rentals}/>
                 </div>}  
             </section>

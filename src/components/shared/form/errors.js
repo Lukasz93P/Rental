@@ -2,7 +2,7 @@ import React from 'react';
 
 const Errors=({errors})=>{
 
-    console.log(errors)
+   
     return(
         errors.length>0 &&
         <div className='alert alert-danger bwm-res-errors'>

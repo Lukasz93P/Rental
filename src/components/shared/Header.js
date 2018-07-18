@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom'
 import SearchInput from '../rental/rental-listing/SearchInput'
 import {withRouter} from 'react-router-dom'
+import {connect} from 'react-redux';
+import * as helpers from '../../helpers/index'
 
 class Header extends Component {
 
@@ -22,15 +24,47 @@ class Header extends Component {
 
     
     search=(event)=>{
+        
         event.preventDefault()
         const {city}=this.state
         city ? this.props.history.push(`/rentals/${city}/homes`) : this.props.history.push(`/rentals`)
-          
+        event.target.elements.searchInput.value=""
+        this.setState({city:""})
     
     }
 
+
+    renderLinks=()=>{
+        const { logout, auth}=this.props
+        if(auth.isAuth)
+            return(
+                <div className='navbar-nav ml-auto form-inline'>
+                    <a className='nav-item nav-link'>{helpers.firstToUpper(auth.username)}</a>
+                    <a className='nav-item nav-link logout' onClick={logout}>Logout</a>
+                    <div className="nav-item dropdown">
+                            <a className="nav-link nav-item dropdown-toggle clickable" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Owner Section
+                            </a>
+                            <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <Link className="dropdown-item" to="/rentals/new">Create Rental</Link>
+                                <Link className="dropdown-item" to="#">Manage Rentals</Link>
+                                <Link className="dropdown-item" to="#">Manage Bookings</Link>
+                            </div>
+                    </div>
+                </div>
+            ) 
+        
+        return(
+            <div className='navbar-nav ml-auto form-inline'>
+                <Link to='/login' className='nav-item nav-link active' >Login <span className='sr-only'>(current)</span></Link>
+                <Link to='/register' className='nav-item nav-link' href=''>Register</Link>
+            </div>
+        )
+
+    }
+
     render(){
-        const { logout}=this.props
+        const { logout, auth}=this.props
 
         return(
             <nav className='navbar navbar-dark navbar-expand-lg'>
@@ -41,11 +75,7 @@ class Header extends Component {
                         <span className='navbar-toggler-icon'></span>
                     </button>
                     <div className='collapse navbar-collapse' id='navbarNavAltMarkup'>
-                        <div className='navbar-nav ml-auto'>
-                            <Link to='/login' className='nav-item nav-link active' >Login <span className='sr-only'>(current)</span></Link>
-                            <Link to='/register' className='nav-item nav-link' href=''>Register</Link>
-                            <p className='nav-item nav-link logout' onClick={logout}>Logout</p>
-                        </div>
+                    {this.renderLinks()}
                     </div>
                 </div>
             </nav>
@@ -53,4 +83,12 @@ class Header extends Component {
     }
 }
 
-export default withRouter(Header)
+function mapStateToProps(state){
+    return {
+        auth:state.auth
+    }
+}
+
+export default connect(mapStateToProps)(withRouter(Header))
+
+

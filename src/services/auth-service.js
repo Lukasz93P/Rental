@@ -18,7 +18,11 @@ class AuthService{
 
     decodeToken=(token)=>{
         return jwt.decode(token)
-    } 
+    }
+    
+    getUsername=()=>{
+        return this.decodeToken(this.getToken()).username
+    }
 
     isTokenValid=()=>{
         const token= this.getToken()
