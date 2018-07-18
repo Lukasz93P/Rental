@@ -7,6 +7,16 @@ import axiosService from "../services/axios-service";
 const axiosInstance =axiosService.getInstance()
 
 
+export const addRental=(rental)=>{
+
+    return axiosInstance.post('/rentals/add', rental)
+        .then(
+            response=>response.data,
+            error=>Promise.reject(error.response.data.error)
+        )
+
+}
+
 export const fetchRentals=(city)=>{
 
     const url = city ? `/rentals?city=${city}` : '/rentals'
@@ -129,9 +139,10 @@ export const login=(userData)=>{
 }
 
 export const loginSuccess=()=>{
-    
+    const username=AuthService.getUsername()
     return {
         type:LOGIN_SUCCESS,
+        payload:username
     }
 }
 
