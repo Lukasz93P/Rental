@@ -5,7 +5,7 @@ const Booking=require('../models/Booking')
 const User=require('../models/User')
 const {authMiddleware}=require('../controllers/user')
 const {normalizeErrors} = require('../helpers/mongoose');
-
+const mongoose=require('mongoose');
 
 router.get('/secret',authMiddleware,(req,res)=>{
     return res.json("SECRETTT");
@@ -36,6 +36,41 @@ router.get('',(req,res)=>{
 
 })
 
+router.delete('/:id',authMiddleware,(req,res)=>{
+
+    rentalId=req.params.id
+    const user=res.locals.user
+    Rental.findById(rentalId)
+    .populate('user _id username')
+    .populate({path:'bookings',
+    select:'startAt',
+    match:{startAt:{$gt:new Date()}}
+    })
+    .exec((err,foundRental)=>{
+
+        if(err)
+            return res.status(422).send({err:normalizeErrors(err.errors)})
+
+        if(foundRental.user._id.toString()!==user._id.toString())
+            return res.status(422).send({errors:[{title:'Invalid User',detail:'You can not delete rental which is not Yours'}]})    
+
+        if(foundRental.bookings.length>0)
+            return res.status(422).send({errors:[{title:'Active bookings',detail:'You can not delete rental with active bookings'}]})    
+
+        Rental.deleteOne({ _id: foundRental._id}, function (err) {
+            if (err) 
+                return res.status(422).send({error:normalizeErrors(err.errors)})
+            
+            return res.json({message:"Rental deleted"})
+        });
+
+
+    })
+
+
+
+})
+
 
 router.post('/add',authMiddleware,(req,res)=>{
 
@@ -48,9 +83,9 @@ router.post('/add',authMiddleware,(req,res)=>{
 
 
     newRental.save(function (error, rental) {
-        if (error) {console.log('!!!!!!!!>>',normalizeErrors(error.errors))
+        if (error) 
             return res.status(422).send({error:normalizeErrors(error.errors)})
-        }
+        
         return(            
             
             User.update({_id:user._id},
@@ -71,6 +106,27 @@ router.post('/add',authMiddleware,(req,res)=>{
 
 })
 
+router.get('/manage',authMiddleware, (req,res)=>{
+
+    const user=res.locals.user
+  
+    Rental.where({user})
+        .populate('bookings'/* (username - send username -_id dont send _id) SAME AS ABOVE THATS WHY user not User capitalized like User schema */)
+        .exec((err,response)=>{
+            if(err){ 
+                return res.status(422).send({errors:[{title:'Rental Error',detail:'Rental not found'}]})
+            } 
+
+            if(response)    
+                return res.json(response)
+            return res.json({message:'You have no rentals'})
+        })
+    
+
+        
+
+})
+
 router.get('/:id',(req,res)=>{
     const rentalId=req.params.id;
     
@@ -86,5 +142,7 @@ router.get('/:id',(req,res)=>{
         })
 
 })
+
+
 
 module.exports=router;
