@@ -49,6 +49,24 @@ exports.booking =(req, res)=>{
 
 }
 
+exports.getUsersBookings =(req,res)=>{
+
+    const user=res.locals.user
+
+        Booking.where({user})
+        .populate('rental'/* (username - send username -_id dont send _id) SAME AS ABOVE THATS WHY user not User capitalized like User schema */)
+        .exec((err,response)=>{
+            if(err){ 
+                return res.status(422).send({error:normalizeErrors(error.errors)}) 
+            } 
+
+            if(response)    
+                return res.json(response)
+            return res.json({message:'You have no bookings'})
+        })
+
+}
+
 const isValidBooking=(requestedBooking,rental)=>{
 
     let isValid=true
@@ -64,3 +82,4 @@ const isValidBooking=(requestedBooking,rental)=>{
 
     return isValid;
 }
+
