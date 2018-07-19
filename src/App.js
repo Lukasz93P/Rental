@@ -13,6 +13,8 @@ import * as actions from './actions/index'
 import {ProtectedRoute} from './components/shared/auth/ProtectedRoute'
 import {LoggedinRoute} from './components/shared/auth/LoggedinRoute'
 import {withRouter} from 'react-router-dom'
+import BookingsManage from './components/booking/bookings-manage/BookingsManage';
+import RentalManage from './components/rental/rental-manage/RentalManage';
 
 const store=require("./reducers").init();
 
@@ -51,11 +53,12 @@ class App extends Component {
               <Route exact path="/" render={()=>{return <Redirect to="/rentals"/>}}/>
               <Route exact path="/rentals" render={()=><RentalListing/>}/>
               <ProtectedRoute path="/rentals/new" component={RentalCreate}/>
+              <ProtectedRoute exact path='/rentals/manage' component={RentalManage}/>
+              <ProtectedRoute exact path='/bookings/manage' component={BookingsManage}/>
               <Route exact path="/rentals/:city/homes" component={RentalSearch}/>
               <ProtectedRoute path="/rentals/:id" component={RentalDetail}/>
               <Route exact path='/login' component={Login}/>
               <LoggedinRoute exact path='/register' component={Register}/>
-              
             </Switch>
           </div>
         </div>

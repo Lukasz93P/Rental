@@ -24,7 +24,7 @@ router.get('',(req,res)=>{
         .select('-bookings')// get all Rentals without bookings to avoid fething to much data without purpose
         .exec((err,response)=>{
             if(err){
-                return res.status(422).send({error:normalizeErrors(error.errors)})
+                return res.status(422).send({errors:normalizeErrors(error.errors)})
             } 
 
             if(city && response.length===0)
@@ -59,7 +59,7 @@ router.delete('/:id',authMiddleware,(req,res)=>{
 
         Rental.deleteOne({ _id: foundRental._id}, function (err) {
             if (err) 
-                return res.status(422).send({error:normalizeErrors(err.errors)})
+                return res.status(422).send({errors:normalizeErrors(err.errors)})
             
             return res.json({message:"Rental deleted"})
         });
@@ -84,27 +84,21 @@ router.post('/add',authMiddleware,(req,res)=>{
 
     newRental.save(function (error, rental) {
         if (error) 
-            return res.status(422).send({error:normalizeErrors(error.errors)})
-        
-        return(            
-            
-            User.update({_id:user._id},
-                {$push:{rentals:newRental}}, function(error,response){
-        
-                    if(error)
-                        return res.status(422).send({error:normalizeErrors(error.errors)}) 
-            }),
-            
-            
+            return res.status(422).send({errors:normalizeErrors(error.errors)})
+        User.update({_id:user._id},
+            {$push:{rentals:newRental}}, function(error,response){    
+                if(error)
+                    return res.status(422).send({errors:normalizeErrors(error.errors)}) 
+      
+        return(                  
             res.json(rental)
-
         )
     });
-    
-
-    
+    })
 
 })
+
+
 
 router.get('/manage',authMiddleware, (req,res)=>{
 

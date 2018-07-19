@@ -1,4 +1,4 @@
-import {FETCH_RENTALS_INIT,FETCH_RENTALS_FAILED,LOGOUT,LOGIN_SUCCESS,LOGIN_FAILED,FETCH_RENTALS_SUCCESS,FETCH_RENTAL_BY_ID_SUCCESS,FETCH_RENTAL_BY_ID_PENDING} from "./types"
+import {FETCH_USERS_BOOKINGS_SUCCESS, FETCH_USERS_BOOKINGS_FAILED,FETCH_USERS_BOOKINGS_INIT,FETCH_USERS_RENTALS_FAILED,FETCH_USERS_RENTALS_INIT,FETCH_USERS_RENTALS_SUCCESS, FETCH_RENTALS_INIT,FETCH_RENTALS_FAILED,LOGOUT,LOGIN_SUCCESS,LOGIN_FAILED,FETCH_RENTALS_SUCCESS,FETCH_RENTAL_BY_ID_SUCCESS,FETCH_RENTAL_BY_ID_PENDING} from "./types"
 import axios from 'axios';
 import AuthService from '../services/auth-service'
 import AxiosService from '../services/axios-service'
@@ -12,10 +12,97 @@ export const addRental=(rental)=>{
     return axiosInstance.post('/rentals/add', rental)
         .then(
             response=>response.data,
-            error=>Promise.reject(error.response.data.error)
+            error=>Promise.reject(error.response.data.errors)
         )
 
 }
+
+export const fetchUsersRentals=()=>{
+
+    return dispatch=>{
+        dispatch(fetchUsersRentalsInit())
+        axiosInstance.get('/rentals/manage')
+            .then(response=>dispatch(fetchUsersRentalsSuccess(response.data)))
+            .catch(errors=>dispatch(fetchUsersRentalsFailed(errors.response.data.errors)))
+    }
+
+}
+
+export const fetchUsersRentalsSuccess=(usersRentals)=>{
+
+    return{
+        
+        type:FETCH_USERS_RENTALS_SUCCESS,
+        payload:usersRentals,
+
+    }
+
+}
+
+export const fetchUsersRentalsInit=()=>{
+
+    return{
+        
+        type:FETCH_USERS_RENTALS_INIT,
+
+    }
+
+}
+
+export const fetchUsersRentalsFailed=(errors)=>{
+
+    return{
+        
+        type:FETCH_USERS_RENTALS_FAILED,
+        payload:errors
+
+    }
+
+}
+
+export const fetchUsersBookings=()=>{
+
+    return dispatch=>{
+        dispatch(fetchUsersRentalsInit())
+        axiosInstance.get('/bookings/manage')
+            .then(response=>dispatch(fetchUsersBookingsSuccess(response.data)))
+            .catch(errors=>dispatch(fetchUsersBookingsFailed(errors.response.data.errors)))
+    }
+
+}
+
+export const fetchUsersBookingsSuccess=(usersBookings)=>{
+    return{
+        
+        type:FETCH_USERS_BOOKINGS_SUCCESS,
+        payload:usersBookings,
+
+    }
+
+}
+
+export const fetchUsersBookingsInit=()=>{
+
+    return{
+        
+        type:FETCH_USERS_BOOKINGS_INIT,
+
+    }
+
+}
+
+export const fetchUsersBookingsFailed=(errors)=>{
+
+    return{
+        
+        type:FETCH_USERS_BOOKINGS_FAILED,
+        payload:errors
+
+    }
+
+}
+
+
 
 export const fetchRentals=(city)=>{
 

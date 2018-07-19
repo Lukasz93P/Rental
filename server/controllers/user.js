@@ -45,7 +45,7 @@ exports.register = (req,res)=>{
         const user=new User({username,email,password});
         user.save(error=>{
         if(error){
-            return res.status(422).send({error:normalizeErrors(error.errors)})
+            return res.status(422).send({errors:normalizeErrors(error.errors)})
         }
         else return res.json({'registerd':true})
         })  
@@ -64,7 +64,7 @@ exports.authMiddleware=function (req,res, next){
         
         User.findById(user.userId,(error,foundUser)=>{
             if(error)
-                return res.status(422).send({error:normalizeErrors(error.errors)})
+                return res.status(422).send({errors:normalizeErrors(error.errors)})
             if(foundUser){
                 res.locals.user=foundUser;
                 next();
