@@ -22,6 +22,7 @@ router.get('',(req,res)=>{
     
     Rental.find(query)
         .select('-bookings')// get all Rentals without bookings to avoid fething to much data without purpose
+        .sort({createdAt: -1})
         .exec((err,response)=>{
             if(err){
                 return res.status(422).send({errors:normalizeErrors(error.errors)})
@@ -81,8 +82,56 @@ router.post('/add',authMiddleware,(req,res)=>{
     
     newRental.user=user
 
+    const saveRental=()=>{
 
-    newRental.save(function (error, rental) {
+        return new Promise((resolve,reject)=>{
+            newRental.save(function (error, rental){
+                if (error) 
+                    reject(error)
+                else
+                    resolve (rental)
+            })
+            
+        })
+
+
+    }
+
+    const updateUser=()=>{
+
+        return new Promise((resolve,reject)=>{
+            
+            User.update({_id:user._id},
+                {$push:{rentals:newRental}}, function(error,response){    
+                    console.log('>>>>>>UPDATING USER')
+                    if(error)
+                        reject(error)
+                    else
+                        return resolve(response)
+            })
+        })
+    }
+
+    async function  doEverythingHere() {
+        
+        try{var savedRental=await saveRental()}
+        catch(error){
+            return res.status(422).send({errors:normalizeErrors(error.errors)})
+        }
+
+        try{await updateUser()}
+        catch(error){
+            return res.status(422).send({errors:normalizeErrors(error.errors)}) 
+        }
+
+        return res.json(savedRental)
+    };
+
+    doEverythingHere()
+
+
+
+    /*newRental.save(function (error, rental) {
         if (error) 
             return res.status(422).send({errors:normalizeErrors(error.errors)})
         User.update({_id:user._id},
@@ -94,7 +143,7 @@ router.post('/add',authMiddleware,(req,res)=>{
             res.json(rental)
         )
     });
-    })
+    })*/
 
 })
 
