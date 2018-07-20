@@ -16,7 +16,7 @@ exports.booking =(req, res)=>{
     .populate('user'/*SAME AS ABOVE THATS WHY user not User capitalized like User schema */)
     .exec((error,foundRental)=>{
         if(error)
-            return res.status(422).send({error:normalizeErrors(error.errors)}) 
+            return res.status(422).send({errors:normalizeErrors(error.errors)}) 
         if(foundRental.user._id.toString()===user._id.toString())
             return res.status(422).send({errors:[{title:'Invalid user', detail:`You can\'t book your own property`}]}) 
         if(isValidBooking(booking,foundRental)){
@@ -24,14 +24,14 @@ exports.booking =(req, res)=>{
             booking.rental=foundRental
             booking.save(error=>{
                 if(error)
-                    return res.status(422).send({error:normalizeErrors(error.errors)}) 
+                    return res.status(422).send({errors:normalizeErrors(error.errors)}) 
                 }
             )
 
             foundRental.bookings.push(booking)
             foundRental.save(error=>{
                 if(error)
-                    return res.status(422).send({error:normalizeErrors(error.errors)}) 
+                    return res.status(422).send({errors:normalizeErrors(error.errors)}) 
                 }
             )
 
@@ -57,7 +57,7 @@ exports.getUsersBookings =(req,res)=>{
         .populate('rental'/* (username - send username -_id dont send _id) SAME AS ABOVE THATS WHY user not User capitalized like User schema */)
         .exec((err,response)=>{
             if(err){ 
-                return res.status(422).send({error:normalizeErrors(error.errors)}) 
+                return res.status(422).send({errors:normalizeErrors(error.errors)}) 
             } 
 
             if(response)    

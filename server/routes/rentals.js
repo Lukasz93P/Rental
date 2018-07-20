@@ -22,9 +22,10 @@ router.get('',(req,res)=>{
     
     Rental.find(query)
         .select('-bookings')// get all Rentals without bookings to avoid fething to much data without purpose
+        .sort({createdAt: -1})
         .exec((err,response)=>{
             if(err){
-                return res.status(422).send({error:normalizeErrors(error.errors)})
+                return res.status(422).send({errors:normalizeErrors(error.errors)})
             } 
 
             if(city && response.length===0)
@@ -59,7 +60,7 @@ router.delete('/:id',authMiddleware,(req,res)=>{
 
         Rental.deleteOne({ _id: foundRental._id}, function (err) {
             if (err) 
-                return res.status(422).send({error:normalizeErrors(err.errors)})
+                return res.status(422).send({errors:normalizeErrors(err.errors)})
             
             return res.json({message:"Rental deleted"})
         });
@@ -81,30 +82,72 @@ router.post('/add',authMiddleware,(req,res)=>{
     
     newRental.user=user
 
+    const saveRental=()=>{
 
-    newRental.save(function (error, rental) {
-        if (error) 
-            return res.status(422).send({error:normalizeErrors(error.errors)})
-        
-        return(            
+        return new Promise((resolve,reject)=>{
+            newRental.save(function (error, rental){
+                if (error) 
+                    reject(error)
+                else
+                    resolve (rental)
+            })
+            
+        })
+
+
+    }
+
+    const updateUser=()=>{
+
+        return new Promise((resolve,reject)=>{
             
             User.update({_id:user._id},
-                {$push:{rentals:newRental}}, function(error,response){
-        
+                {$push:{rentals:newRental}}, function(error,response){    
+                    console.log('>>>>>>UPDATING USER')
                     if(error)
-                        return res.status(422).send({error:normalizeErrors(error.errors)}) 
-            }),
-            
-            
-            res.json(rental)
+                        reject(error)
+                    else
+                        return resolve(response)
+            })
+        })
+    }
 
+    async function  doEverythingHere() {
+        
+        try{var savedRental=await saveRental()}
+        catch(error){
+            return res.status(422).send({errors:normalizeErrors(error.errors)})
+        }
+
+        try{await updateUser()}
+        catch(error){
+            return res.status(422).send({errors:normalizeErrors(error.errors)}) 
+        }
+
+        return res.json(savedRental)
+    };
+
+    doEverythingHere()
+
+
+
+    /*newRental.save(function (error, rental) {
+        if (error) 
+            return res.status(422).send({errors:normalizeErrors(error.errors)})
+        User.update({_id:user._id},
+            {$push:{rentals:newRental}}, function(error,response){    
+                if(error)
+                    return res.status(422).send({errors:normalizeErrors(error.errors)}) 
+      
+        return(                  
+            res.json(rental)
         )
     });
-    
-
-    
+    })*/
 
 })
+
+
 
 router.get('/manage',authMiddleware, (req,res)=>{
 
