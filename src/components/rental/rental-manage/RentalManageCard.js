@@ -17,7 +17,7 @@ const RentalManageCard=({rental})=>{
                     Check bookings
                 </button>
                     <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    {rental.bookings.map((booking,index)=><button key={index} class="btn btn-success dropdown-item" >{moment(booking.startAt).format('Y/MM/DD')} - {moment(booking.endAt).format('Y/MM/DD')}</button>)}>
+                    {rental.bookings.map((booking,index)=><button key={index} classsavedRental="btn btn-success dropdown-item" >{moment(booking.startAt).format('Y/MM/DD')} - {moment(booking.endAt).format('Y/MM/DD')}</button>)}>
                     </div>
                 </div>
                 
