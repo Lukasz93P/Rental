@@ -1,6 +1,7 @@
 import React from 'react'
 import * as actions from '../../../actions/index';
 import {connect} from 'react-redux';
+import BookingCard from './BookingsCard'
 
 class BookingsManage extends React.Component{
 
@@ -16,10 +17,10 @@ class BookingsManage extends React.Component{
         if(bookings&&bookings.length>0)
             return(
                 <div>
-                    {bookings.map((booking,index)=> <p key={index}>{booking.startAt}</p>)}
+                    {bookings.map((booking,index)=> <BookingCard key={index} booking={booking}/>)}}
                 </div>
             )
-        return(
+            return(
 
             <h1>Rental Manage</h1>
 

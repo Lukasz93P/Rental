@@ -21,7 +21,6 @@ class RentalSearch extends Component{
 
     fetchSearchedRentals=()=>{
         const city=this.props.match.params.city
-        this.setState({city:city})
         this.props.dispatch(actions.fetchRentals(city))
     }
 

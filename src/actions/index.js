@@ -1,4 +1,4 @@
-import {FETCH_USERS_BOOKINGS_SUCCESS, FETCH_USERS_BOOKINGS_FAILED,FETCH_USERS_BOOKINGS_INIT,FETCH_USERS_RENTALS_FAILED,FETCH_USERS_RENTALS_INIT,FETCH_USERS_RENTALS_SUCCESS, FETCH_RENTALS_INIT,FETCH_RENTALS_FAILED,LOGOUT,LOGIN_SUCCESS,LOGIN_FAILED,FETCH_RENTALS_SUCCESS,FETCH_RENTAL_BY_ID_SUCCESS,FETCH_RENTAL_BY_ID_PENDING} from "./types"
+import {FETCH_RENTAL_BOOKINGS_INIT,FETCH_RENTAL_BOOKINGS_FAILED,FETCH_RENTAL_BOOKINGS_SUCCESS,FETCH_USERS_BOOKINGS_SUCCESS, FETCH_USERS_BOOKINGS_FAILED,FETCH_USERS_BOOKINGS_INIT,FETCH_USERS_RENTALS_FAILED,FETCH_USERS_RENTALS_INIT,FETCH_USERS_RENTALS_SUCCESS, FETCH_RENTALS_INIT,FETCH_RENTALS_FAILED,LOGOUT,LOGIN_SUCCESS,LOGIN_FAILED,FETCH_RENTALS_SUCCESS,FETCH_RENTAL_BY_ID_SUCCESS,FETCH_RENTAL_BY_ID_PENDING} from "./types"
 import axios from 'axios';
 import AuthService from '../services/auth-service'
 import AxiosService from '../services/axios-service'
@@ -6,6 +6,56 @@ import axiosService from "../services/axios-service";
 
 const axiosInstance =axiosService.getInstance()
 
+export const deleteRental=(rentalId)=>{
+
+    return axiosInstance.delete(`/rentals/${rentalId}`)
+        .then(
+            response=>response.data,
+            error=>Promise.reject(error.response.data.errors)
+        )
+
+}
+
+export const fetchRentalBookings=(rentalId)=>{
+
+    return dispatch=>{
+        dispatch(fetchRentalBookingsInit())
+        axiosInstance.get(`/rentals/manage/rentalbookings/${rentalId}`)
+        .then(
+            response=>dispatch(fetchRentalBookingsSuccess(response.data))
+            ,
+            error=>dispatch(fetchRentalBookingsFailed(error.response.data.errors))
+        )
+        
+    }
+
+}
+
+export const fetchRentalBookingsInit=()=>{
+
+    return {
+        type:FETCH_RENTAL_BOOKINGS_INIT
+    }
+
+}
+
+export const fetchRentalBookingsSuccess=(bookings)=>{
+
+    return {
+        type:FETCH_RENTAL_BOOKINGS_SUCCESS,
+        payload:bookings
+    }
+
+}
+
+export const fetchRentalBookingsFailed=(error)=>{
+
+    return {
+        type:FETCH_RENTAL_BOOKINGS_FAILED,
+        payload:error
+    }
+
+}
 
 export const addRental=(rental)=>{
 

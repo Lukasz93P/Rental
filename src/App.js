@@ -15,6 +15,7 @@ import {LoggedinRoute} from './components/shared/auth/LoggedinRoute'
 import {withRouter} from 'react-router-dom'
 import BookingsManage from './components/booking/bookings-manage/BookingsManage';
 import RentalManage from './components/rental/rental-manage/RentalManage';
+import BookingList from './components/rental/rental-manage/BookingsList'
 
 const store=require("./reducers").init();
 
@@ -55,6 +56,7 @@ class App extends Component {
               <ProtectedRoute path="/rentals/new" component={RentalCreate}/>
               <ProtectedRoute exact path='/rentals/manage' component={RentalManage}/>
               <ProtectedRoute exact path='/bookings/manage' component={BookingsManage}/>
+              <ProtectedRoute exact path='/rentals/manage/rentalbookings/:id' component={BookingList}/>
               <Route exact path="/rentals/:city/homes" component={RentalSearch}/>
               <ProtectedRoute path="/rentals/:id" component={RentalDetail}/>
               <Route exact path='/login' component={Login}/>

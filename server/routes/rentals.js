@@ -170,6 +170,67 @@ router.get('/manage',authMiddleware, (req,res)=>{
 
 })
 
+router.get('/manage/rentalbookings/:id',(req,res)=>{
+
+    const rentalId=req.params.id
+    
+    findRental=(rentalId)=>{
+
+        return new Promise((resolve,reject)=>{
+
+            Rental.findById(rentalId,(error,rental)=>{
+                if(error)
+                    reject(erros)
+                if(rental)
+                    resolve(rental)
+               })
+
+        })
+    }
+
+    findRentalBookings=(rental)=>{
+
+
+        return new Promise((resolve,reject)=>{
+            Booking.where({rental})
+            .exec((error,bookings)=>{
+                if(error)
+                    reject(error)
+                if(bookings)
+                    resolve(bookings)
+            })
+        })
+
+    }
+
+    
+    async function  getBookings() {
+        
+        try{var rental=await findRental(rentalId)}
+        catch(error){
+            return res.status(422).send({errors:normalizeErrors(error.errors)})
+        }
+
+        try{var bookings= await findRentalBookings(rental)}
+        catch(error){
+            return res.status(422).send({errors:normalizeErrors(error.errors)}) 
+        }
+        if(bookings && bookings.length>0)
+            return res.json(bookings)
+        else 
+            return res.status(422).send({errors:[{title:'No bookings', detail:`Rental has no bookings`}]})
+        
+    };
+       
+    if(rentalId)
+        getBookings()
+
+    else 
+        return res.status(422).send({errors:[{title:'Invalid Rental', detail:`Something\'s wrong with the request-missing data`}]})
+
+
+})
+
 router.get('/:id',(req,res)=>{
     const rentalId=req.params.id;
     
@@ -185,6 +246,8 @@ router.get('/:id',(req,res)=>{
         })
 
 })
+
+
 
 
 
