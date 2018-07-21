@@ -3,6 +3,8 @@ import * as moment from 'moment'
 import {connect} from 'react-redux';
 import * as actions from '../../../actions/index';
 import Warnings from '../../shared/Warnings'
+import isPassed from '../../../helpers/index'
+import BookingListCard from './BookingListCard'
 
 
 
@@ -21,22 +23,12 @@ class BookingList extends React.Component {
 
     render(){
         const {bookings,errors}=this.props
+        
         if(bookings && bookings.length>0)
         return(
-            <div>
-                {bookings.map((booking,index)=>
-                
-                
-                <div key={index} className="card mb-3 text-secondary row justify-content-center" >
-                    <div className="card-header text-center">{moment(booking.startAt).format('Y/MM/DD')} - {moment(booking.endAt).format('Y/MM/DD')}</div>
-                    <div className="card-body">
-                        <h5 className="card-title text-center">Receivables: {booking.totalPrice}</h5>
-                        <p className="card-text text-center">Guests: {booking.guests}</p>
-                        <p className="card-text text-center">Days: {booking.days}</p>
-                    </div>
-                </div>
-                
-                
+            
+            <div className='row'>
+                {bookings.map((booking,index)=><BookingListCard booking={booking} key={index}/>
                 )}
             </div>
 

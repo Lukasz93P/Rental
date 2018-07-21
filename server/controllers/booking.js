@@ -99,6 +99,8 @@ exports.cancelBooking =(req,res)=>{
 
             if(booking.user._id.toString()!==user._id.toString())
                 return reject({errors:[{title:'Invalid user', detail:`You can not cancel booking which is not your`}]})
+            if(!isDateBefore(booking))
+                return reject({errors:[{title:'Invalid date', detail:`Booking can be cancelled only 4 or more days before it\'s start`}]})
             booking.canceled=true
             booking.save()
             .then(updatedBooking=>resolve(updatedBooking))
@@ -112,7 +114,7 @@ exports.cancelBooking =(req,res)=>{
         
         try{var booking=await findBooking()}
         catch(error){
-            return res.status(422).send({errors:normalizeErrors(error.errors)})
+            return res.status(422).send(error)
         }
         
         if(booking){
@@ -121,7 +123,7 @@ exports.cancelBooking =(req,res)=>{
             }
             catch(error){
 
-                return res.status(422).send({errors:normalizeErrors(error.errors)})
+                return res.status(422).send(error)
             }
         }  
 
@@ -132,6 +134,12 @@ exports.cancelBooking =(req,res)=>{
 
 }
 
+const isDateBefore=(booking)=>{
+
+    const bookingStart=moment(booking.startAt)
+    return bookingStart.diff(moment(),'days') > 3
+
+}
 
 
 const isValidBooking=(requestedBooking,rental)=>{

@@ -46,10 +46,14 @@ class RentalManage extends React.Component{
         return(
 
             <div>
-                <Warnings errors={errors}/>
-                <div className='row justify-content-center'>
-                    <Link to='/rentals/new'><button className='btn btn-lg btn-primary'>{`Let\'s change it!`}</button></Link>
+                {(errors && errors.length>0) &&
+                <div>
+                    <Warnings errors={errors}/>
+                    <div className='row justify-content-center'>
+                        <Link to='/rentals/new'><button className='btn btn-lg btn-primary'>{`Let\'s change it!`}</button></Link>
+                    </div>
                 </div>
+                }
             </div>
             
 

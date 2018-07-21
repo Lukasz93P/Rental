@@ -40,4 +40,11 @@ export const fieldRequired=()=>{
 
 }
 
+export const isPassed=(booking)=>{
+
+    const bookingEnd=moment(booking.endAt)
+    return bookingEnd.isBefore(moment())
+
+}
+
 

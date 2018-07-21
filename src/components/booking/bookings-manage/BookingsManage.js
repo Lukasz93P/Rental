@@ -22,16 +22,19 @@ class BookingsManage extends React.Component{
                     {bookings.map((booking,index)=> <BookingCard key={index} booking={booking}/>)}
                 </div>
             )
+
             return(
 
             <div>
-                <Warnings errors={errors}/>
-                <div className='row justify-content-center'>
-                    <Link to='/rentals'><button className='btn btn-lg btn-primary'>{`Let\'s change it!`}</button></Link>
+                {(errors && errors.length>0) && 
+                <div>
+                    <Warnings errors={errors}/>
+                    <div className='row justify-content-center'>
+                        <Link to='/rentals'><button className='btn btn-lg btn-primary'>{`Let\'s change it!`}</button></Link>
+                    </div>
                 </div>
+                }
             </div>
-
-
         )
     }
 
