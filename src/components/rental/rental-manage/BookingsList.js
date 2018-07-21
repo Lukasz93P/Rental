@@ -24,12 +24,12 @@ class BookingList extends React.Component {
                 {bookings.map((booking,index)=>
                 
                 
-                <div key={index} className="card text-white bg-success mb-3" >
-                    <div className="card-header text-primary">{moment(booking.startAt).format('Y/MM/DD')} - {moment(booking.endAt).format('Y/MM/DD')}</div>
+                <div key={index} className="card mb-3 text-secondary row justify-content-center" >
+                    <div className="card-header text-center">{moment(booking.startAt).format('Y/MM/DD')} - {moment(booking.endAt).format('Y/MM/DD')}</div>
                     <div className="card-body">
-                        <h5 className="card-title text-primary">Receivables: {booking.totalPrice}</h5>
-                        <p className="card-text text-primary">Guests: {booking.guests}</p>
-                        <p className="card-text text-primary">Days: {booking.days}</p>
+                        <h5 className="card-title text-center">Receivables: {booking.totalPrice}</h5>
+                        <p className="card-text text-center">Guests: {booking.guests}</p>
+                        <p className="card-text text-center">Days: {booking.days}</p>
                     </div>
                 </div>
                 

@@ -154,7 +154,8 @@ router.get('/manage',authMiddleware, (req,res)=>{
     const user=res.locals.user
   
     Rental.where({user})
-        .populate('bookings'/* (username - send username -_id dont send _id) SAME AS ABOVE THATS WHY user not User capitalized like User schema */)
+        .sort({createdAt: -1})
+        //.populate('bookings'/* (username - send username -_id dont send _id) SAME AS ABOVE THATS WHY user not User capitalized like User schema */)
         .exec((err,response)=>{
             if(err){ 
                 return res.status(422).send({errors:[{title:'Rental Error',detail:'Rental not found'}]})
@@ -193,6 +194,7 @@ router.get('/manage/rentalbookings/:id',(req,res)=>{
 
         return new Promise((resolve,reject)=>{
             Booking.where({rental})
+            .sort({startAt: -1})
             .exec((error,bookings)=>{
                 if(error)
                     reject(error)

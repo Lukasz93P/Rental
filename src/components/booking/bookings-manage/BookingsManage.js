@@ -17,7 +17,7 @@ class BookingsManage extends React.Component{
         if(bookings&&bookings.length>0)
             return(
                 <div>
-                    {bookings.map((booking,index)=> <BookingCard key={index} booking={booking}/>)}}
+                    {bookings.map((booking,index)=> <BookingCard key={index} booking={booking}/>)}
                 </div>
             )
             return(
