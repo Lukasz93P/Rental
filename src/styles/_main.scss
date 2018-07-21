@@ -7,6 +7,13 @@
 @import './booking/booking.scss';
 @import './rental/rental-not-found.scss';
 
+.nounderline{
+
+    text-decoration: none !important;
+    &:hover{
+        text-decoration: none !important
+    }
+}
 .page-title{
     font-size: 30px;
     font-weight: 800;
