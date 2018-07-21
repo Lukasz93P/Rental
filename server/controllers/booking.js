@@ -70,7 +70,7 @@ exports.booking =(req, res)=>{
             return new Promise((resolve,reject)=>{
 
                 const notification=new Notification({type:'success',message:'You have new client!'})
-                notification.rental=rental
+                notification.rental=rental// <<<<=== always like that  NOT LIKE(BECAUSE IT CAN TRIGGER MONGOOSE STACK ERROR)==>>>> const notification=new Notification({type:'success',message:'You have new client!',rental,booking})
                 notification.booking=booking
                 notification.save()
                 .then(savedNotification=>resolve(savedNotification))
@@ -196,9 +196,45 @@ exports.cancelBooking =(req,res)=>{
             .catch(error=>reject({errors:normalizeErrors(error.errors)}))
             })
         }
-    
-    
 
+    const createNotification=(booking)=>{
+
+        return new Promise((resolve,reject)=>{
+
+            const notification=new Notification({type:'canceled',message:'Unfortunately booking was canceled'})
+            notification.rental=booking.rental// <<<<=== always like that  NOT LIKE(BECAUSE IT CAN TRIGGER MONGOOSE STACK ERROR)==>>>> const notification=new Notification({type:'success',message:'You have new client!',rental,booking})
+            notification.booking=booking
+            notification.save()
+            .then(savedNotification=>resolve(savedNotification))
+            .catch(error=>reject({errors:normalizeErrors(error.errors)}))
+
+        })
+
+    }        
+    
+    const findNotifcationRental=(notification)=>{
+
+        return new Promise((resolve,reject)=>{
+
+            Rental.findById(notification.rental._id)
+            .then(rental=>resolve(rental))
+            .catch(error=>reject({errors:normalizeErrors(error.errors)}))
+        })
+    }
+    
+    const updateUserToNotificate=(notification,rental)=>{
+        return new Promise((resolve,reject)=>{
+            User.update({_id:rental.user._id},
+                {$push:{notifications:notification}}, function(error,updatedUser){
+                    if(error)
+                        reject({errors:normalizeErrors(error.errors)})
+                    if(updatedUser)
+                        resolve(updatedUser) 
+
+                }
+            )
+        })
+    }
 
     
 
@@ -216,7 +252,26 @@ exports.cancelBooking =(req,res)=>{
             return res.status(422).send(error)
         }
 
-        return res.json(canceledBooking)
+        try{var savedNotification=await createNotification(booking)
+            
+        }
+        catch(error){
+
+            return res.status(422).send(error)
+        }
+
+        try{var rental=await findNotifcationRental(savedNotification)}
+        catch(error){
+            return res.status(422).send(error)
+        }
+
+        try{await updateUserToNotificate(savedNotification,rental)
+            return res.json(canceledBooking)
+        }
+        catch(error){
+
+            return res.status(422).send(error)
+        }
     };
     
     doWork()

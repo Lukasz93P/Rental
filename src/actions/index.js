@@ -1,10 +1,33 @@
-import {FETCH_RENTAL_BOOKINGS_INIT,FETCH_RENTAL_BOOKINGS_FAILED,FETCH_RENTAL_BOOKINGS_SUCCESS,FETCH_USERS_BOOKINGS_SUCCESS, FETCH_USERS_BOOKINGS_FAILED,FETCH_USERS_BOOKINGS_INIT,FETCH_USERS_RENTALS_FAILED,FETCH_USERS_RENTALS_INIT,FETCH_USERS_RENTALS_SUCCESS, FETCH_RENTALS_INIT,FETCH_RENTALS_FAILED,LOGOUT,LOGIN_SUCCESS,LOGIN_FAILED,FETCH_RENTALS_SUCCESS,FETCH_RENTAL_BY_ID_SUCCESS,FETCH_RENTAL_BY_ID_PENDING} from "./types"
+import {FETCH_USERS_NOTIFICATIONS_SUCCESS,FETCH_RENTAL_BOOKINGS_INIT,FETCH_RENTAL_BOOKINGS_FAILED,FETCH_RENTAL_BOOKINGS_SUCCESS,FETCH_USERS_BOOKINGS_SUCCESS, FETCH_USERS_BOOKINGS_FAILED,FETCH_USERS_BOOKINGS_INIT,FETCH_USERS_RENTALS_FAILED,FETCH_USERS_RENTALS_INIT,FETCH_USERS_RENTALS_SUCCESS, FETCH_RENTALS_INIT,FETCH_RENTALS_FAILED,LOGOUT,LOGIN_SUCCESS,LOGIN_FAILED,FETCH_RENTALS_SUCCESS,FETCH_RENTAL_BY_ID_SUCCESS,FETCH_RENTAL_BY_ID_PENDING} from "./types"
 import axios from 'axios';
 import AuthService from '../services/auth-service'
 import AxiosService from '../services/axios-service'
 import axiosService from "../services/axios-service";
 
 const axiosInstance =axiosService.getInstance()
+
+
+export const fetchUsersNotifications=()=>{
+
+    return dispatch=>{
+        axiosInstance.get(`/notifications`)
+        .then(
+            response=>{ console.log('>>>>>>>',response.data.notifications) ,dispatch(fetchUsersNotificationsSuccess(response.data.notifications))},
+            error=>Promise.reject(error.response.data.errors)
+        )
+    }
+
+}
+
+export const fetchUsersNotificationsSuccess=(notifications)=>{
+
+    return{
+        type:FETCH_USERS_NOTIFICATIONS_SUCCESS,
+        payload:notifications
+
+    }
+
+}
 
 
 export const cancelBooking=(bookingId)=>{
