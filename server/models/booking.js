@@ -9,7 +9,8 @@ const bookingSchema=new Schema({
     guests:{type:Number},
     createdAt:{type:Date, default:Date.now},
     user:{type:Schema.Types.ObjectId, ref: 'User'},
-    rental:{type:Schema.Types.ObjectId, ref: 'Rental'}
+    canceled:{type:Boolean, default:false},
+    rental:{type:Schema.Types.ObjectId, ref: 'Rental'},
 })
 
 module.exports = mongoose.model('Booking', bookingSchema)

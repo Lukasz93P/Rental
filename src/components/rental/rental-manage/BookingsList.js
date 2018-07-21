@@ -2,6 +2,9 @@ import React from 'react'
 import * as moment from 'moment'
 import {connect} from 'react-redux';
 import * as actions from '../../../actions/index';
+import Warnings from '../../shared/Warnings'
+
+
 
 class BookingList extends React.Component {
 
@@ -17,7 +20,7 @@ class BookingList extends React.Component {
     }
 
     render(){
-        const {bookings,error}=this.props
+        const {bookings,errors}=this.props
         if(bookings && bookings.length>0)
         return(
             <div>
@@ -38,17 +41,13 @@ class BookingList extends React.Component {
             </div>
 
         )
-        if(error && error.length>0)
+
         return(
 
-            <div className='alert alert-warning row justify-content-md-center'>
-                <div className='col-6 '><h2>{error[0].detail}</h2></div>
+            <div className='row justify-content-center'>
+                <Warnings errors={errors}/>
             </div>
 
-        )
-        else return(
-        <div>
-        </div>
         )
         
     }
@@ -58,7 +57,7 @@ class BookingList extends React.Component {
 function mapStateToProps(state){
     return {
         bookings:state.rentalBookings.data,
-        error:state.rentalBookings.errors
+        errors:state.rentalBookings.errors
     }
 }
 

@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import RentalManageCard from './RentalManageCard'
 import { ToastContainer, toast } from 'react-toastify';
 import {Link} from 'react-router-dom'
+import Warnings from '../../shared/Warnings'
 
 class RentalManage extends React.Component{
 
@@ -34,7 +35,7 @@ class RentalManage extends React.Component{
     }
 
     render(){
-        const {rentals}=this.props.rentalsManage
+        const {rentals,errors}=this.props.rentalsManage
         if(rentals&&rentals.length>0)
             return(
                 <div className='row container '>
@@ -44,7 +45,13 @@ class RentalManage extends React.Component{
             )
         return(
 
-            <h1>Rental Manage</h1>
+            <div>
+                <Warnings errors={errors}/>
+                <div className='row justify-content-center'>
+                    <Link to='/rentals/new'><button className='btn btn-lg btn-primary'>{`Let\'s change it!`}</button></Link>
+                </div>
+            </div>
+            
 
 
         )
