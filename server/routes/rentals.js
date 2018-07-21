@@ -161,9 +161,9 @@ router.get('/manage',authMiddleware, (req,res)=>{
                 return res.status(422).send({errors:[{title:'Rental Error',detail:'Rental not found'}]})
             } 
 
-            if(response)    
+            if(response && response.length>0)    
                 return res.json(response)
-            return res.json({message:'You have no rentals'})
+            return res.status(422).send({errors:[{title:'No rentals',detail:'You have no rentals'}]})
         })
     
 

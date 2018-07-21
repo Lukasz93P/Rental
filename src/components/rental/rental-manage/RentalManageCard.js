@@ -15,7 +15,7 @@ const RentalManageCard=(props)=>{
             <button className="btn btn-primary" type="button" data-toggle="collapse" data-target={`#collapse${rental._id}`} aria-expanded="false" aria-controls={`#collapse${rental._id}`}>
                 Click for details
             </button>
-            <div class="collapse" id={`collapse${rental._id}`}>
+            <div className="collapse" id={`collapse${rental._id}`}>
             <div className="card-body  d-flex-justify-center">
                 <h4 className="card-title">Rental Details</h4>
                 <h5>{rental.city} {rental.street}</h5>

@@ -6,6 +6,17 @@ import axiosService from "../services/axios-service";
 
 const axiosInstance =axiosService.getInstance()
 
+
+export const cancelBooking=(bookingId)=>{
+
+    return axiosInstance.put(`/bookings/manage/cancel/${bookingId}`)
+        .then(
+            response=>response.data,
+            error=>Promise.reject(error.response.data.errors)
+        )
+
+}
+
 export const deleteRental=(rentalId)=>{
 
     return axiosInstance.delete(`/rentals/${rentalId}`)
