@@ -22,7 +22,9 @@ const userSchema=new Schema({
 
     rentals:[{type:Schema.Types.ObjectId, ref: 'Rental'}],
     
-    bookings:[{type:Schema.Types.ObjectId, ref: 'Booking'}]
+    bookings:[{type:Schema.Types.ObjectId, ref: 'Booking'}],
+
+    notifications:[{type:Schema.Types.ObjectId, ref: 'Notification'}]
 })
 
 userSchema.pre('save', function (next){

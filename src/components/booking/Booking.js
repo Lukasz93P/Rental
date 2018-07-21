@@ -56,7 +56,7 @@ export class Booking extends React.Component {
 
     dateApplyHandler=(event,picker)=>{
 
-        this.setState({bookingStartDate:picker.startDate.format('Y/MM/DD'), bookingEndDate:picker.endDate.format('Y/MM/DD')})
+        this.setState({bookingStartDate:picker.startDate.format('Y/MM/DD'), bookingEndDate:picker.endDate.format('Y/MM/DD'),errors:[]})
         this.dateInputRef.current.value= `${picker.startDate.format('Y/MM/DD')} to ${picker.endDate.format('Y/MM/DD')}` 
     }
 

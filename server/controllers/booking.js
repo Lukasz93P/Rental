@@ -5,49 +5,138 @@ const {normalizeErrors} = require('../helpers/mongoose');
 const jwt = require('jsonwebtoken');
 const moment = require('moment')
 const mongoose =require('mongoose');
+const Notification=require('../models/notification')
 
 exports.booking =(req, res)=>{
     const {startAt,endAt,totalPrice,guests,days,rental}= req.body
     const user=res.locals.user
     const booking= new Booking({startAt,endAt,totalPrice,guests,days})
 
-    Rental.findById(mongoose.Types.ObjectId(rental._id))
-    .populate('bookings'/*NOT SCHEMA NAME BUT NAME OF FIELD IN RENTAL SCHEMA WHICH CONTAINS BOOKINGS*/)
-    .populate('user'/*SAME AS ABOVE THATS WHY user not User capitalized like User schema */)
-    .exec((error,foundRental)=>{
-        if(error)
-            return res.status(422).send({errors:normalizeErrors(error.errors)}) 
-        if(foundRental.user._id.toString()===user._id.toString())
-            return res.status(422).send({errors:[{title:'Invalid user', detail:`You can\'t book your own property`}]}) 
-        if(isValidBooking(booking,foundRental)){
-            booking.user=user
-            booking.rental=foundRental
-            booking.save(error=>{
-                if(error)
-                    return res.status(422).send({errors:normalizeErrors(error.errors)}) 
-                }
-            )
 
-            foundRental.bookings.push(booking)
-            foundRental.save(error=>{
-                if(error)
-                    return res.status(422).send({errors:normalizeErrors(error.errors)}) 
-                }
-            )
+    const updateRental=()=>{
 
-            User.update({_id:user._id},
-                {$push:{bookings:booking}}, function(error,response){}
-            )
-           
+        return new Promise((resolve,reject)=>{
+
+            Rental.findById(mongoose.Types.ObjectId(rental._id))
+            .populate('bookings'/*NOT SCHEMA NAME BUT NAME OF FIELD IN RENTAL SCHEMA WHICH CONTAINS BOOKINGS*/)
+            .populate('user'/*SAME AS ABOVE THATS WHY user not User capitalized like User schema */)
+            .exec((error,foundRental)=>{
+                if(error)
+                    return resolve({errors:normalizeErrors(error.errors)}) 
+                if(foundRental.user._id.toString()===user._id.toString())
+                    return reject({errors:[{title:'Invalid user', detail:`You can\'t book your own property`}]}) 
+                if(isValidBooking(booking,foundRental)){
+                    booking.user=user
+                    booking.rental=foundRental
+                    booking.save(error=>{
+                        if(error)
+                            return reject({errors:normalizeErrors(error.errors)}) 
+                        }
+                    )
+        
+                    foundRental.bookings.push(booking)
+                    foundRental.save()
+                    .then(savedRental=>resolve(savedRental))
+                    .catch(error=>reject({errors:normalizeErrors(error.errors)}))
+                }
+                else 
+                    reject({errors:[{title:'Invalid booking', detail:`Booking is not available at choosen dates`}]})
             
-            return res.json({startAt:booking.startAt, endAt:booking.endAt})
+            })
+        })
+    }
+
+
+        const updateUser=(booking)=>{
+
+            return new Promise((resolve,reject)=>{
+                User.update({_id:user._id},
+                    {$push:{bookings:booking}}, function(error,updatedUser){
+
+                        if(error)
+                            reject({errors:normalizeErrors(error.errors)})
+                        if(updatedUser)
+                            resolve(updatedUser) 
+
+                    }
+                )
+
+            })
         }
-        else
-            return res.status(422).send({errors:[{title:'Invalid booking', detail:`Booking is not available at choosen dates`}]})
 
-    })
 
-}
+        const createNotification=(rental)=>{
+
+            return new Promise((resolve,reject)=>{
+
+                const notification=new Notification({type:'success',message:'You have new client!'})
+                notification.rental=rental
+                notification.booking=booking
+                notification.save()
+                .then(savedNotification=>resolve(savedNotification))
+                .catch(error=>reject({errors:normalizeErrors(error.errors)}))
+
+            })
+
+        }
+
+
+        const updateUserToNotificate=(rental,notification)=>{
+            return new Promise((resolve,reject)=>{
+                User.update({_id:rental.user._id},
+                    {$push:{notifications:notification}}, function(error,updatedUser){
+                        if(error)
+                            reject({errors:normalizeErrors(error.errors)})
+                        if(updatedUser)
+                            resolve(updatedUser) 
+
+                    }
+                )
+            })
+        }
+
+
+
+        async function  doWorkHere() {
+        
+            try{var rental=await updateRental()}
+            catch(error){
+                return res.status(422).send(error)
+            }
+            
+            try{await updateUser(booking)
+
+            }
+            catch(error){
+    
+                return res.status(422).send(error)
+            }
+
+            try{var savedNotification=await createNotification(rental)
+
+            }
+            catch(error){
+                return res.status(422).send(error)
+
+            }
+
+            try{await updateUserToNotificate(rental,savedNotification)
+                return res.json({startAt:booking.startAt, endAt:booking.endAt})
+            }
+            catch(error){
+                return res.status(422).send(error)
+            }
+
+            
+
+        }  
+
+        doWorkHere()
+
+    }
+    
+
+
 
 exports.getUsersBookings =(req,res)=>{
 
@@ -104,10 +193,13 @@ exports.cancelBooking =(req,res)=>{
             booking.canceled=true
             booking.save()
             .then(updatedBooking=>resolve(updatedBooking))
-            .catch(error=>reject(error))
+            .catch(error=>reject({errors:normalizeErrors(error.errors)}))
             })
         }
     
+    
+
+
     
 
     async function  doWork() {
@@ -117,15 +209,12 @@ exports.cancelBooking =(req,res)=>{
             return res.status(422).send(error)
         }
         
-        if(booking){
-            try{var canceledBooking=await cancel(booking)
-                
-            }
-            catch(error){
+        try{var canceledBooking=await cancel(booking)
+        }
+        catch(error){
 
-                return res.status(422).send(error)
-            }
-        }  
+            return res.status(422).send(error)
+        }
 
         return res.json(canceledBooking)
     };
@@ -157,4 +246,3 @@ const isValidBooking=(requestedBooking,rental)=>{
 
     return isValid;
 }
-

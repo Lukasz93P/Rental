@@ -103,7 +103,6 @@ router.post('/add',authMiddleware,(req,res)=>{
             
             User.update({_id:user._id},
                 {$push:{rentals:newRental}}, function(error,response){    
-                    console.log('>>>>>>UPDATING USER')
                     if(error)
                         reject(error)
                     else
