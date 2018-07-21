@@ -4,6 +4,7 @@ import SearchInput from '../rental/rental-listing/SearchInput'
 import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux';
 import * as helpers from '../../helpers/index'
+import NotificationDropdown from '../notifications/NotificationDropdown'
 
 class Header extends Component {
 
@@ -51,6 +52,7 @@ class Header extends Component {
                                 <Link className="dropdown-item" to="/bookings/manage">Manage Bookings</Link>
                             </div>
                     </div>
+                    <a className=' mx-10'><NotificationDropdown className='ml-auto'/></a>
                 </div>
             ) 
         
