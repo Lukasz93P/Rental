@@ -7,12 +7,25 @@ import axiosService from "../services/axios-service";
 const axiosInstance =axiosService.getInstance()
 
 
+export const makeNotificationNotNew=(notificationId)=>{
+
+    return axiosInstance.put(`/notifications/makenotnew/${notificationId}`)
+        .then(
+            response=>response.data,
+            error=>Promise.reject(error.response.data.errors)
+        )
+
+
+}
+
 export const fetchUsersNotifications=()=>{
+
+    
 
     return dispatch=>{
         axiosInstance.get(`/notifications`)
         .then(
-            response=>{ console.log('>>>>>>>',response.data.notifications) ,dispatch(fetchUsersNotificationsSuccess(response.data.notifications))},
+            response=>dispatch(fetchUsersNotificationsSuccess(response.data.notifications)),
             error=>Promise.reject(error.response.data.errors)
         )
     }

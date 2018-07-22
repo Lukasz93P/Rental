@@ -16,6 +16,7 @@ import {withRouter} from 'react-router-dom'
 import BookingsManage from './components/booking/bookings-manage/BookingsManage';
 import RentalManage from './components/rental/rental-manage/RentalManage';
 import BookingList from './components/rental/rental-manage/BookingsList'
+import NotificationCarousel from './components/notifications/NotificationDropdown'
 
 const store=require("./reducers").init();
 
@@ -49,6 +50,7 @@ class App extends Component {
       <Provider store={store}>
         <div className="App">
           <Header logout={this.logout} />
+          <ProtectedRoute path=''  component={NotificationCarousel}/>
           <div className='container'>
             <Switch>
               <Route exact path="/" render={()=>{return <Redirect to="/rentals"/>}}/>
