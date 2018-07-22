@@ -6,7 +6,7 @@ export class FileInput extends React.Component{
     onChange=(event)=>{
 
         const {input:{onChange}}=this.props
-        onChange("https://cdn.pixabay.com/photo/2014/07/31/21/41/apartment-406901_960_720.jpg"/*event.target.value*/)
+        onChange(event.target.value)
     }
  
     render(){
@@ -15,7 +15,7 @@ export class FileInput extends React.Component{
         <div className='form-group'>
             <label>{label}</label>
             <div className='input-group'>
-              <input type='file' accept='.jpg, .png, .jpeg' 
+              <input type='file' id="fileInput" accept='.jpg, .png, .jpeg' 
                 onChange={this.onChange}
               />
               </div>

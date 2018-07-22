@@ -20,11 +20,68 @@ class RentalCreate extends React.Component{
 
     onFormSubmit=(values)=>{
         const newRental={...values}
-        actions.addRental(newRental)
-        .then(response=>this.props.history.push(`/rentals/${response._id}`)
-            
-        )
-        .catch(err=> this.setState({errors:err}))        
+        const file=document.getElementById("fileInput").files[0]
+        let readedFile={}
+
+        function fileToText(file, callback) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+              callback(reader.result);
+            };
+        }
+
+
+        const getReadedFile=()=>{
+
+            return new Promise((resolve,reject)=>{
+                fileToText(file,result=>{
+                    if(result)
+                    console.log('!!!!!!!!!!',result)
+                        resolve(result)}
+                )
+
+            })
+        }
+
+
+        const sendRentalToServer=(readedFile)=>{
+
+            return new Promise ((resolve,reject)=>{
+                actions.addRental(newRental,readedFile)
+                .then(response=>resolve(response)
+                )
+                .catch(err=> reject(err)  
+                
+            )})
+
+        }
+
+        const sendRequest= async ()=>{
+
+            try{
+            var readedFile=await getReadedFile()
+            }
+            catch(error){
+                
+            }
+
+            try{
+                const response=await sendRentalToServer(readedFile)
+                if(response)
+                    this.props.history.push(`/rentals/${response._id}`) 
+            }
+            catch(error){
+                this.setState({errors:error}) 
+            }
+
+
+        }
+
+
+        sendRequest()
+
+      
     }
 
 
