@@ -52,7 +52,6 @@ class Header extends Component {
                                 <Link className="dropdown-item" to="/bookings/manage">Manage Bookings</Link>
                             </div>
                     </div>
-                    <a className=' mx-10'><NotificationDropdown className='ml-auto'/></a>
                 </div>
             ) 
         

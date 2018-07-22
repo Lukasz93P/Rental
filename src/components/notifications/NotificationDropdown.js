@@ -2,34 +2,58 @@ import React from 'react'
 import * as actions from '../../actions/index'
 import {connect} from 'react-redux';
 //import Warnings from '../../shared/Warnings'
-import DropdownMenuNotification from './DropdownMenuNotification'
+import  NotificationCarouselItem from './NotificationCarouselItem'
 
-class NotificationDropdown extends React.Component{
+class NotificationCarousel extends React.Component{
 
     componentWillMount(){
 
+        this.fetchUsersNotifications()
+
+    }
+
+    fetchUsersNotifications=()=>{
+
         this.props.dispatch(actions.fetchUsersNotifications())
+
+    }
+
+    onNotificationClick=(notificationId)=>{
+
+        actions.makeNotificationNotNew(notificationId)
 
     }
 
 
     render(){
         const {notifications,errors}=this.props.notifications
-        
-        if(notifications&& notifications.length>0)
+        const newNotifications=notifications.filter(notification=>notification.new)
+        if(newNotifications&& newNotifications.length>0)
             return(
-                <div className="row w-100">
-                    
-                    <div class="dropdown dropDownOpen">
-                        <button className="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {`${notifications.length} notifications`}
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            {notifications.map((notification,index)=>{if(notification.new) return <DropdownMenuNotification key={index} notification={notification}/>})}
-                        </div>
-                    </div>
-
+                <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
+                {newNotifications.map((notification,index)=>{if(notification.new){ if(index===0) return (<div key={index} className="carousel-item active">
+                       <NotificationCarouselItem onNotificationClick={this.onNotificationClick} key={index} notification={notification}/>
+                    </div>)
+                else return <div key={index} className="carousel-item">
+                <NotificationCarouselItem onNotificationClick={this.onNotificationClick} key={index} notification={notification}/>
+             </div>
+                
+            }})}
+                <ol className="carousel-indicators ">
+                    {newNotifications.map((notification,index)=>{if(notification.new){ if(index===0) return (<li key={index} className='active' data-target="#carouselExampleIndicators" data-slide-to={index}></li>)
+                    return <li key={index} data-target="#carouselExampleIndicators" data-slide-to={index}></li>}})    
+                    }
+                </ol>
+                <a className="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span className="sr-only">Previous</span>
+                </a>
+                <a className="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                    <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span className="sr-only">Next</span>
+                </a>
                 </div>
+
             )
 
             return(
@@ -51,4 +75,4 @@ function mapStateToProps(state){
 
 
 
-export default connect(mapStateToProps)(NotificationDropdown)
+export default connect(mapStateToProps)(NotificationCarousel)
