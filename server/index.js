@@ -14,7 +14,7 @@ mongoose.connect('mongodb://test:6974figd@ds247838.mlab.com:47838/rental-base')
     //DB.pushTo();
 })
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '100mb'}));
 app.use('/api/v1/rentals', rentalRoutes);
 app.use('/api/v1/users', usersRoutes);
 app.use('/api/v1/bookings', bookingRoutes);

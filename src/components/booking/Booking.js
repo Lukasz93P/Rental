@@ -6,6 +6,7 @@ import * as moment from 'moment'
 import BookingModal from './BookingModal'
 import * as actions from '../../actions/index'
 import { ToastContainer, toast } from 'react-toastify';
+import ImageUploader from 'react-images-upload';
 
 
 export class Booking extends React.Component {
@@ -20,7 +21,8 @@ export class Booking extends React.Component {
             bookingEndDate:"",
             guests:1,
             open:false,
-            errors:[]
+            errors:[],
+            image:''
 
         }
     }
@@ -77,6 +79,7 @@ export class Booking extends React.Component {
             totalPrice:this.state.totalPrice,
             guests:this.state.guests,
             rental:this.state.rental,
+            image:this.state.image
         }
 
         actions.createBooking(booking)

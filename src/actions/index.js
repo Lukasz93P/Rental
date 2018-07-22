@@ -104,9 +104,9 @@ export const fetchRentalBookingsFailed=(error)=>{
 
 }
 
-export const addRental=(rental)=>{
-
-    return axiosInstance.post('/rentals/add', rental)
+export const addRental=(rental,data)=>{
+    const objectToPost={rental,data}
+    return axiosInstance.post('/rentals/add', objectToPost)
         .then(
             response=>response.data,
             error=>Promise.reject(error.response.data.errors)

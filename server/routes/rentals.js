@@ -6,6 +6,15 @@ const User=require('../models/User')
 const {authMiddleware}=require('../controllers/user')
 const {normalizeErrors} = require('../helpers/mongoose');
 const mongoose=require('mongoose');
+const cloudinary = require('cloudinary')
+cloudinary.config({ 
+    cloud_name: 'dq1swwmqn', 
+    api_key: '936445342757572', 
+    api_secret: 'dOV4Bf3pn5lydX6vtX3rFG5-ZRY' 
+  });
+
+  
+  
 
 router.get('/secret',authMiddleware,(req,res)=>{
     return res.json("SECRETTT");
@@ -75,15 +84,31 @@ router.delete('/:id',authMiddleware,(req,res)=>{
 
 router.post('/add',authMiddleware,(req,res)=>{
 
-    const {title, city, street, category, image, bedrooms, shared, description, dailyRate} = req.body
+    const {title, city, street, category, bedrooms, shared, description, dailyRate} = req.body.rental
+    const data=req.body.data
     const user = res.locals.user
 
-    const newRental = new Rental({title, city, street, category, image, bedrooms, shared, description, dailyRate})
+
+    const newRental = new Rental({title, city, street, category, bedrooms, shared, description, dailyRate})
     
     newRental.user=user
 
-    const saveRental=()=>{
 
+    const uploadImageAndGetUrl=()=>{
+
+        
+        return new Promise((resolve,reject)=>{
+
+            cloudinary.uploader.upload(data, function(result){resolve(result)})
+
+        })
+        
+
+    }
+
+    const saveRental=(responseFromCloudinary)=>{
+
+        newRental.image=responseFromCloudinary.url
         return new Promise((resolve,reject)=>{
             newRental.save(function (error, rental){
                 if (error) 
@@ -97,12 +122,12 @@ router.post('/add',authMiddleware,(req,res)=>{
 
     }
 
-    const updateUser=()=>{
+    const updateUser=(savedRental)=>{
 
         return new Promise((resolve,reject)=>{
             
             User.update({_id:user._id},
-                {$push:{rentals:newRental}}, function(error,response){    
+                {$push:{rentals:savedRental}}, function(error,response){    
                     if(error)
                         reject(error)
                     else
@@ -112,18 +137,30 @@ router.post('/add',authMiddleware,(req,res)=>{
     }
 
     async function  doEverythingHere() {
-        
-        try{var savedRental=await saveRental()}
+        try{var response=await uploadImageAndGetUrl()
+        }
+        catch(error){
+        }
+
+        if(response)
+        try{
+            
+            var savedRental=await saveRental(response)}
         catch(error){
             return res.status(422).send({errors:normalizeErrors(error.errors)})
         }
-
-        try{await updateUser()}
+        
+        if(savedRental)
+        try{
+            var updatedUser =await updateUser(savedRental)}
         catch(error){
             return res.status(422).send({errors:normalizeErrors(error.errors)}) 
         }
-
-        return res.json(savedRental)
+        
+        if(updatedUser){
+        console.log(updatedUser)
+            return res.json(savedRental)
+        }
     };
 
     doEverythingHere()
@@ -211,6 +248,7 @@ router.get('/manage/rentalbookings/:id',(req,res)=>{
         catch(error){
             return res.status(422).send({errors:normalizeErrors(error.errors)})
         }
+        if(rental)
 
         try{var bookings= await findRentalBookings(rental)}
         catch(error){
